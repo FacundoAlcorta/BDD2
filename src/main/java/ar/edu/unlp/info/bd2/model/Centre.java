@@ -27,17 +27,17 @@ public class Centre {
 	joinColumns = @JoinColumn(name="centre_id"),
 	inverseJoinColumns = @JoinColumn(name = "employee_id")
 	)
-	private Collection<Employee> staffs;
+	private Collection<Staff> staffs;
 	
 	public Centre() {
 	}
 	
 	public Centre(String name) {
-		staffs = new ArrayList<Employee>();
+		staffs = new ArrayList<Staff>();
 		this.name=name;
 	}
 	
-	public void addStaff(Employee employee) {
+	public void addStaff(Staff employee) {
 		staffs.add(employee);
 		employee.addCentres(this);
 	}
@@ -48,10 +48,10 @@ public class Centre {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Collection<Employee> getStaffs() {
+	public Collection<Staff> getStaffs() {
 		return this.staffs;
 	}
-	public void setStaffs(List<Employee> staffs) {
+	public void setStaffs(List<Staff> staffs) {
 		this.staffs = staffs;
 	}
 

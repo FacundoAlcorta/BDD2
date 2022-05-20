@@ -1,5 +1,7 @@
 package ar.edu.unlp.info.bd2.repositories;
 
+import java.util.List;
+
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -104,4 +106,37 @@ public class VaxRepository {
 		}
 	}
 	
+	public List<Nurse> getNurseWithMoreThanNYearsExperience(int years){
+		Query query=this.getSession().createQuery("from nurses where experience> :years").setParameter("years",years);
+		return (List<Nurse>) query.getResultList();
+	}
+	
+	public Centre getTopShotCentre() {
+		Query query=this.getSession().createQuery("select c from shots as s JOIN s.centre as c"
+				+ " GROUP BY c ORDER BY count(*) DESC").setMaxResults(1);
+		try {
+			return (Centre)query.getSingleResult();
+		}
+		catch(NoResultException e) {
+			return null;
+		}
+	}
+	
+	public String getLessEmployeesSupportStaffArea() {
+		Query query=this.getSession().createQuery("select s.area from supportstaffs as s"
+				+ " GROUP BY area ORDER BY count(*) ASC").setMaxResults(1);
+		try {
+			return (String)query.getSingleResult();
+		}
+		catch(NoResultException e) {
+			return null;
+		}
+	}
+	
+	public List<Vaccine> getUnappliedVaccines(){
+		Query query=this.getSession().createQuery("select v from vaccines as v where v.id not in"
+				+ "(select vac.id from shots as s join s.vaccine as vac)");
+		List<Vaccine> vaccines= query.getResultList();
+		return vaccines;
+	}
 }

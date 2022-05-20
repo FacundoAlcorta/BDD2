@@ -1,6 +1,7 @@
 package ar.edu.unlp.info.bd2.services;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import ar.edu.unlp.info.bd2.model.Centre;
 import ar.edu.unlp.info.bd2.model.Nurse;
 import ar.edu.unlp.info.bd2.model.Patient;
 import ar.edu.unlp.info.bd2.model.Shot;
+import ar.edu.unlp.info.bd2.model.ShotCertificate;
+import ar.edu.unlp.info.bd2.model.Staff;
 import ar.edu.unlp.info.bd2.model.SupportStaff;
 import ar.edu.unlp.info.bd2.model.VaccinationSchedule;
 import ar.edu.unlp.info.bd2.model.Vaccine;
@@ -114,6 +117,61 @@ public class VaxServiceImpl implements VaxService {
 	@Override
 	public Optional<SupportStaff> getSupportStaffByDni(String dni) {
 		return Optional.of(this.repository.findSupportStaffByDni(dni));
+	}
+	
+	@Override
+	public VaccinationSchedule updateVaccinationSchedule(VaccinationSchedule schedule) {
+		return (VaccinationSchedule) this.repository.update(schedule);
+	}
+
+	@Override
+	public List<Patient> getAllPatients() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Nurse> getNurseWithMoreThanNYearsExperience(int years) {
+		return this.repository.getNurseWithMoreThanNYearsExperience(years);
+	}
+
+	@Override
+	public List<Centre> getCentresTopNStaff(int n) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Centre getTopShotCentre() {
+		return this.repository.getTopShotCentre();
+	}
+
+	@Override
+	public List<Nurse> getNurseNotShot() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLessEmployeesSupportStaffArea() {
+		return this.repository.getLessEmployeesSupportStaffArea();
+	}
+
+	@Override
+	public List<Staff> getStaffWithName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Vaccine> getUnappliedVaccines() {
+		return this.repository.getUnappliedVaccines();
+	}
+
+	@Override
+	public List<ShotCertificate> getShotCertificatesBetweenDates(Date startDate, Date endDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

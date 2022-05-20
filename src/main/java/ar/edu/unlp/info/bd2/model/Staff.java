@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public abstract class Employee {
+public abstract class Staff {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.TABLE)
@@ -19,10 +19,10 @@ public abstract class Employee {
 	protected String fullname;
 	protected String dni;
 	
-	public Employee() {
+	public Staff() {
 	}
 	
-	public Employee(String fullname , String dni) {
+	public Staff(String fullname , String dni) {
 		this.dni = dni;
 		this.fullname = fullname;
 		centres = new ArrayList<Centre>();

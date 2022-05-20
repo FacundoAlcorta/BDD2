@@ -3,7 +3,7 @@ package ar.edu.unlp.info.bd2.model;
 import javax.persistence.*;
 
 @Entity(name= "supportstaffs")
-public class SupportStaff extends Employee{
+public class SupportStaff extends Staff{
 	
 	private String area;
 

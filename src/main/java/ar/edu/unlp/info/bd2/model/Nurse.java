@@ -3,7 +3,7 @@ package ar.edu.unlp.info.bd2.model;
 import javax.persistence.*;
 
 @Entity(name="nurses")
-public class Nurse extends Employee {
+public class Nurse extends Staff {
 	
 	private int experience;
 
