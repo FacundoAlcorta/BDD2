@@ -137,8 +137,7 @@ public class VaxServiceImpl implements VaxService {
 
 	@Override
 	public List<Centre> getCentresTopNStaff(int n) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.repository.getCentresTopNStaff(n);
 	}
 
 	@Override
@@ -148,8 +147,7 @@ public class VaxServiceImpl implements VaxService {
 
 	@Override
 	public List<Nurse> getNurseNotShot() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.repository.getNurseNotShot();
 	}
 
 	@Override
@@ -159,8 +157,7 @@ public class VaxServiceImpl implements VaxService {
 
 	@Override
 	public List<Staff> getStaffWithName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getStaffWithName(name);
 	}
 
 	@Override
@@ -170,8 +167,7 @@ public class VaxServiceImpl implements VaxService {
 
 	@Override
 	public List<ShotCertificate> getShotCertificatesBetweenDates(Date startDate, Date endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.repository.getShotCertificatesBetweenDates(startDate, endDate);
 	}
 
 }
