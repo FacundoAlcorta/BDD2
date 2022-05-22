@@ -126,8 +126,7 @@ public class VaxServiceImpl implements VaxService {
 
 	@Override
 	public List<Patient> getAllPatients() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.repository.getAllPatients();
 	}
 
 	@Override
@@ -157,7 +156,7 @@ public class VaxServiceImpl implements VaxService {
 
 	@Override
 	public List<Staff> getStaffWithName(String name) {
-		return this.getStaffWithName(name);
+		return this.repository.getStaffWithName(name);
 	}
 
 	@Override
