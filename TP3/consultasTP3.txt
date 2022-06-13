@@ -1,0 +1,200 @@
+﻿Facultad de Informática – Universidad Nacional de La Plata   
+Cátedra de Bases de Datos II
+Bases de Datos 2 2022 -TP3 Bases de Datos NoSQL / Práctica con MongoDB 
+entrega: 13/6
+
+
+Parte 2: Primeros pasos con MongoDB
+
+
+5. Para crear la base de datos se utilizó el comando :   use vaccination 
+  Para crear la colección nurses se usó el comando db.createCollection(“nurses”)
+Para agregarle una enfermera se utilizó el comando:      db.nurses.insertOne({name:”Morella Crespo”,experience:9})
+
+
+6. Para agregar los enfermeros debemos usar el comando db.nurses.insertMany()
+
+
+db.nurses.insertMany([ {name:’Gale Molina', experience:8, vaccines: ['AZ', ‘Moderna']} , {name:’Honoria Fernández', experience:5, vaccines: ['Pfizer', ‘Moderna’, ‘Sputnik V’]}, {name:’Gonzalo Gallardo', experience:3} ,
+{name:’Altea Parra', experience:6, vaccines: ['Pfizer']} ])
+
+
+Y busque los enfermeros: 
+- de 5 años de experiencia o menos 
+ > db.nurses.find({experience: {$lt: 5}}) <
+
+
+- que hayan aplicado la vacuna “Pfizer” 
+>  db.nurses.find({vaccines: {$elemMatch: {$eq: 'Pfizer'}}}) <
+
+
+- que no hayan aplicado vacunas (es decir, que el atributo vaccines esté ausente) 
+> db.nurses.find({vaccines: { $exists: false}}) <
+
+
+
+
+- de apellido ‘Fernández’ 
+Debemos crear un índice , para buscar sobre name 
+> db.nurses.createIndex({name:"text",line:"text"}) <
+ahora si podemos buscar por el campo name
+> db.nurses.find( {$text: {$search: "Fernandez" }} ) < 
+- con 6 o más años de experiencia y que hayan aplicado la vacuna ‘Moderna’ 
+ > db.nurses.find
+({$and: [{experience: {$gte: 6} }, {vaccines: {$elemMatch: {$eq: 'Moderna'}} } ] } ) <
+
+
+vuelva a realizar la última consulta pero proyecte sólo el nombre del enfermero/a en los  resultados, omitiendo incluso el atributo _id de la proyección.
+Se agrega al final los campos que quiero y los que no.
+> db.nurses.find({$and: [{experience: {$gte: 6} }, {vaccines: {$elemMatch: {$eq: 'Moderna'}} } ] },{name:1,_id:0} ) <
+
+
+ 7. Actualice a “Gale Molina” cambiándole la experiencia a 9 años. 
+> db.nurses.update({name: {$eq: "Gale Molina"}}, {$set: {experience:9}})  <
+8. Cree el array de vacunas (vaccines) para ”Gonzalo Gallardo".
+ > db.nurses.update({name: {$eq: "Gonzalo Gallardo"}}, {$set: {vaccines: []}})  <
+9. Agregue “AZ” a las vacunas de “Altea Parra”. 
+> db.nurses.update({name: {$eq: "Altea Parra"}}, {$push: {vaccines: 'AZ'}})  <
+10. Duplique la experiencia de todos los enfermeros que hayan aplicado la vacuna “Pfizer”
+> db.nurses.updateMany({vaccines: {$elemMatch: {$eq: 'Pfizer'}}}, {$mul: {experience: 2}}) <
+
+
+Parte 3: Índices 
+Para eliminar a todos los enfermeros de la colección se utilizó el comando db.nurses.remove({})
+
+
+11. Busque en la colección de compras (doses) si existe algún índice definido
+
+
+ > db.doses.getIndex() <
+
+
+
+
+
+
+
+
+12. Se crea el índice ejecutando el comando 
+   > db.doses.createIndex({nurse:1}) <
+
+
+Sin índice la consulta > db.doses.find({nurse: /.*11.*/})  <  Se ejecutó en 389 milisegundos y se analizaron 200069 documentos.
+
+
+Con índice la consulta > db.doses.find({nurse:/.*11.*/}) < se ejecutó en 528 milisegundos y se analizaron 11963 documentos:
+
+
+13.  Se define la variable en la terminal:
+ var caba = {
+ "type":"MultiPolygon",
+ "coordinates":[[[
+   [-58.46305847167969,-34.53456089748654],
+   [-58.49979400634765,-34.54983198845187],
+   [-58.532066345214844,-34.614561581608186],
+   [-58.528633117675774,-34.6538270014492],
+   [-58.48674774169922,-34.68742794931483],
+   [-58.479881286621094,-34.68206400648744],
+   [-58.46855163574218,-34.65297974261105],
+   [-58.465118408203125,-34.64733112904415],
+   [-58.4585952758789,-34.63998735602951],
+   [-58.45344543457032,-34.63603274732642],
+   [-58.447265625,-34.63575026806082],
+   [-58.438339233398445,-34.63038297923296],
+   [-58.38100433349609,-34.62162507826766],
+   [-58.38237762451171,-34.59251960889388],
+   [-58.378944396972656,-34.5843230246475],
+   [-58.46305847167969,-34.53456089748654]
+ ]]]
+}
+
+
+Para buscar los pacientes que viven en la ciudad de Buenos Aires se ejecutó la consulta: 
+
+
+db.patients.find({address:{$geoWithin: {$geometry: caba}}}).explain(“executionStats”).
+Para crear el índice 2dsphere se ejecutó 
+db.patients.createIndex({address:”2dsphere”})
+Luego de crear el índice se volvió a realizar 
+db.patients.find({address:{$geoWithin: {$geometry: caba}}}).explain(“executionStats”)
+
+
+
+
+
+
+
+
+
+
+Parte 4: Aggregation Framework 
+14. Obtenga 5 pacientes aleatorios de la colección.
+> db.patients.aggregate( [ { $sample: { size: 5 } } ] ) <
+15. 
+ Creamos la nueva colección donde guardamos el resultado
+        > db.createCollection(“patientsBsAs”) <
+  Anteriormente se creó el índice 2dsphere (ejercicio 13) para el campo address
+  >  db.patients.createIndex({address:”2dsphere”}) <
+   En el siguiente paso realizamos la consulta utilizando $geoNear , que genera un orden de documentos a partir de un punto específico. 
+
+
+db.patients.aggregate([
+        {
+          $geoNear: {
+             near: { type: "Point", coordinates: [ -58.4586 , -34.5968  ] },
+             distanceField: "address",
+             maxDistance: 1000,
+             includeLocs: "address",
+             spherical: true
+          }
+        }, {$out: "patientsBsAs"}
+     ])
+
+
+16.
+ Primero debemos crear la nueva collection , donde se guardarán los documentos resultantes, en nuestro caso la nombramos dosesAplicadas.
+     > db.createCollection(“dosesAplicadas”) <
+
+
+  db.patientsBsAs.aggregate([
+        { $lookup:  
+             { from: "doses",
+               localField: "name",
+               foreignField: "patient",
+               as: "doses"
+             }
+        }, 
+        { $group: {
+            _id : "$name" ,
+            doses: { $push : "$doses" } }
+         } , 
+         { $out: "dosesAplicadas" } 
+      ])
+17. En este ejercicio decidimos separar la operación en 3 pasos:
+primer paso: creamos una nueva collection que almacena los nurses con name que contienen 111
+> db.createCollection(“nurses111”) <
+> db.nurses.aggregate([ {$match: { name:/.*111.*/}} , {$out: "nurses111"} ]) <
+
+
+segundo paso : creamos una collection que almacena las doses que se aplicaron luego de la fecha 1/5/2021
+> db.createCollection(“dosesAfter”) <
+> db.doses.aggregate([ {$match: {date: { $gt: new Date("2021-5-1T00:00:00Z") }}}, {$out: "dosesAfter"}]) <
+tercer paso: creamos una collection que almacenará a a los nurses con todas sus vacunas aplicadas. Utilizamos $lookup con las collections creadas en el primer y segundo paso. Agrupamos los nurses por su nombre. Con el $unset eliminamos el campo nurse de las dosis que se repite y el id de la dosis. Finalmente guardamos los documentos en nursesConDosisAplicadas
+> db.createCollection(“nursesConDosisAplicadas”) <
+
+
+db.nurses111.aggregate([ 
+{ $lookup:
+                  { from: "dosesAfter",
+                localField: "name",
+                foreignField: "nurse",
+                as: "doses”  }
+                 } , 
+           { $group: 
+    {  _id : "$name" ,
+                   doses: { $push : "$doses" } }
+          } , 
+          {$unset: ["doses.nurse" , "doses._id" ]
+          },  
+          { $out: "nursesConDosisAplicadas" } 
+])
