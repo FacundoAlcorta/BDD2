@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import ar.edu.unlp.info.bd2.model.Centre;
@@ -54,8 +55,7 @@ public class SpringDataVaxService implements VaxService {
 
 	@Override
 	public List<Nurse> getNurseWithMoreThanNYearsExperience(int years) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.nurseRepository.getNurseWithMoreThanNYearsExperience(years);
 	}
 
 	@Override
@@ -66,8 +66,7 @@ public class SpringDataVaxService implements VaxService {
 
 	@Override
 	public Centre getTopShotCentre() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.centreRepository.getTopShotCentre(PageRequest.of(0,1)).get(0);
 	}
 
 	@Override
@@ -78,8 +77,7 @@ public class SpringDataVaxService implements VaxService {
 
 	@Override
 	public String getLessEmployeesSupportStaffArea() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.supportStaffRepository.getLessEmployeesSupportStaffArea(PageRequest.of(0,1)).get(0);
 	}
 
 	@Override
@@ -90,8 +88,7 @@ public class SpringDataVaxService implements VaxService {
 
 	@Override
 	public List<Vaccine> getUnappliedVaccines() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.vaccineRepository.getVaccineNotShot();
 	}
 
 	@Override
