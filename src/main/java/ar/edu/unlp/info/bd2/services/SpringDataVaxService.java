@@ -49,8 +49,7 @@ public class SpringDataVaxService implements VaxService {
 
 	@Override
 	public List<Patient> getAllPatients() {
-		// TODO Auto-generated method stub
-		return null;
+		return (List<Patient>) this.patientRepository.findAll();
 	}
 
 	@Override
@@ -60,8 +59,7 @@ public class SpringDataVaxService implements VaxService {
 
 	@Override
 	public List<Centre> getCentresTopNStaff(int n) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.centreRepository.getCentresTopNStaff(PageRequest.of(0,n));
 	}
 
 	@Override
@@ -71,8 +69,7 @@ public class SpringDataVaxService implements VaxService {
 
 	@Override
 	public List<Nurse> getNurseNotShot() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.nurseRepository.getNurseNotShot();
 	}
 
 	@Override
@@ -82,8 +79,14 @@ public class SpringDataVaxService implements VaxService {
 
 	@Override
 	public List<Staff> getStaffWithName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		//DEBO REALIZAR UNA QUERY A LA TABLA DE NURSES Y A LA TABLA DE SUPPORTSTAFF
+		//CONSULTA PARA LA TABLA DE SupportStaff
+		List<Staff> ss = this.supportStaffRepository.getStaffWithName("%"+name+"%");
+		//CONSULTA PARA LA TABLA DE Nurses
+		List<Staff> n = this.nurseRepository.getStaffWithName("%"+name+"%");
+		//JUNTAR EL Staff DE LAS DOS QUERIES
+		ss.addAll(n);
+		return ss;
 	}
 
 	@Override
@@ -93,8 +96,7 @@ public class SpringDataVaxService implements VaxService {
 
 	@Override
 	public List<ShotCertificate> getShotCertificatesBetweenDates(Date startDate, Date endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.shotCertificateRepository.getShotCertificatesBetweenDates(startDate , endDate);
 	}
 
 	@Override
